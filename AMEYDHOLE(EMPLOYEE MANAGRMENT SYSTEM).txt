@@ -1,0 +1,456 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>                       
+
+struct node
+{
+	struct node *lptr;
+	long int id;
+	char name[15];
+	char designation[15];
+	long int salary;
+	long int performance;
+
+	struct node *rptr;
+
+};
+struct node *root = NULL;
+struct node *front =NULL;
+struct node *top  = NULL;
+void ADD_EMPLOYEE() //BINARY_TREE & LINKED_LIST IMPLEMENTATION( RIGHT SKEWED BINARY TREE! )
+{
+	if(root==NULL)
+	{
+		struct node *temp;
+		temp = (struct node*)malloc(sizeof(struct node));
+		printf("ENTER ID:-\n");
+		scanf("%ld",&temp->id);
+		printf("ENTER NAME:-\n");
+		scanf("%s",temp->name);
+		printf("ENTER DESIGNATION:-\n");
+		scanf("%s",temp->designation);
+		printf("ENTER SALARY:-\n");
+		scanf("%ld",&temp->salary);
+		printf("ENTER PERFORMANCE:-\n");
+		scanf("%ld",&temp->performance);
+		temp->lptr=NULL;
+		temp->rptr=NULL;
+		root=temp;
+	}
+	else
+	{
+		struct node *ptr= root;
+		struct node *temp;
+		temp = (struct node*)malloc(sizeof(struct node));
+		printf("ENTER ID:-\n");
+		scanf("%ld",&temp->id);
+		printf("ENTER NAME:-\n");
+		scanf("%s",temp->name);
+		printf("ENTER DESIGNATION:-\n");
+		scanf("%s",temp->designation);
+		printf("ENTER SALARY:-\n");
+		scanf("%ld",&temp->salary);
+		printf("ENTER PERFORMANCE:-\n");
+		scanf("%ld",&temp->performance);
+
+
+		while(ptr != NULL)
+		{
+			if((ptr->performance < temp->performance) && (ptr->rptr==NULL))
+			{
+
+				ptr->rptr = temp;
+				temp->lptr = ptr;
+				temp->rptr= NULL;
+			}
+			if((ptr->performance > temp->performance) && (ptr==root))
+			{
+				ptr->lptr = temp;
+				temp->rptr = ptr;
+				temp->lptr= NULL;
+				root=temp;
+			}
+			if((ptr->performance < temp->performance)  && ((ptr->rptr)->performance > (temp->performance) ))
+			{
+				temp->rptr=ptr->rptr;
+				temp->lptr=ptr;
+				(ptr->rptr)->lptr=temp;
+				ptr->rptr=temp;
+
+			}
+			ptr = ptr->rptr;
+		}
+
+	}
+	printf("\n\n");
+}
+void REMOVE_EMPLOYEE()
+{
+	struct node *ptr=root;
+	char del_employee[15];
+	printf("ENTER THE DATA TO BE DELETED.\n");
+	scanf("%s",del_employee);
+	while(ptr!=NULL)
+	{
+		if(strcmpi(del_employee,ptr->name)==0)
+		{
+		  if(ptr==root)
+		  {
+			root= ptr->rptr;
+			ptr->rptr=NULL;
+			root->lptr=NULL;
+		  }
+		  else if(ptr->rptr==NULL)
+		  {
+			(ptr->lptr)->rptr= NULL;
+		  }
+		  else
+		  {
+			(ptr->rptr)->lptr= ptr->lptr;
+			(ptr->lptr)->rptr= ptr->rptr;
+		  }
+
+		}
+		ptr=ptr->rptr;
+	}
+	printf("\n");
+
+
+}
+
+void TOTAL_EMPLOYEES(void)
+{
+	long int i=0;
+	struct node *ptr;
+	ptr=root;
+	while(ptr!=NULL)
+	{
+		i=i+1;
+		ptr=ptr->rptr;
+	}
+	printf("TOTAL EMPLOYEES ARE:-%ld",i);
+	printf("\n\n");
+
+
+}
+
+
+
+
+void SEARCH_EMPLOYEE()
+{
+	char search_employee[10];
+	long int i=0;
+	struct node *ptr=root;
+	while(ptr->rptr!=NULL)
+	{
+
+		ptr = ptr->rptr;
+	}
+	printf("ENTER THE EMPLOYEE DATA TO BE SEARCHED.\n");
+	scanf("%s",search_employee);
+	while(strcmpi(ptr->name,search_employee)!=0&&ptr!=NULL)
+	{
+		i=i+1;
+		ptr=ptr->lptr;
+
+	}
+		if(strcmpi(ptr->name,search_employee)==0)
+		{
+			printf("EMPLOYEE FOUND AT LOCTAION :- %ld\n",i+1);
+		}
+		else if(ptr==NULL)
+		{
+			printf("EMPLOYEE NOT FOUND.\n");
+
+		}
+
+
+	printf("\n");
+
+}
+void LEAST_PERFORMER()
+{
+
+	printf("LEAST PERFORMER OF THE YEAR 2020 ,IS:-\nº  %ld  º  %s  º  %s  º\n",root->id,root->name,root->designation);
+}
+void TOP_PERFORMER()    //STACKS_IMPLEMENTATION
+{
+	struct node *top=root;
+	while(top->rptr!=NULL)
+	{
+
+		top = top->rptr;
+		if(top->rptr==NULL)
+		{
+			printf("STAR PERFORMER OF THE YEAR 2020 ,IS:-\nº  %ld  º  %s  º  %s  º\n",top->id,top->name,top->designation);
+		}
+
+	}
+}
+void DISP_LOW_EMP_PER_WRTO_GIVEN()
+{
+	struct node *ptr=root;
+	long int performance1;
+	while(ptr->rptr!=NULL)
+	{
+
+		ptr = ptr->rptr;
+	}
+
+	printf("ENTER THE PERFORMACE OF EMPLOYEE (on 10 point scale):-\n");
+	scanf("%ld",&performance1);
+	while(ptr!=NULL)
+	{
+		if(ptr->performance < performance1)
+		{
+			printf("º  %ld  º  %s  º  %s º\n",ptr->id,ptr->name,ptr->designation);
+		}
+		ptr=ptr->lptr;
+	}
+	printf("\n");
+
+}
+void DISP_HIGH_EMP_PER_WRTO_GIVEN()
+{
+	struct node *ptr=root;
+	long int performance1;
+	while(ptr->rptr!=NULL)
+	{
+
+		ptr = ptr->rptr;
+	}
+	printf("ENTER THE PERFORMACE OF EMPLOYEE (on 10 point scale):-\n");
+	scanf("%ld",&performance1);
+
+	while(ptr!=NULL)
+	{
+		if(ptr->performance > performance1)
+		{
+			printf("º  %ld  º  %s  º  %s  º\n",ptr->id,ptr->name,ptr->designation);
+
+		}
+		ptr=ptr->lptr;
+	}
+	printf("\n");
+
+}
+void TOTAL_EMP_SALARY_PER_ANNUM()
+{
+	struct node *ptr=root;
+	long int total_price=0;
+	while(ptr!=NULL)
+	{
+		total_price = total_price + ptr->salary;
+		ptr=ptr->rptr;
+	}
+	printf("COMPANY's EMPLOYEE INVESTMENT PER ANNUM :- %ld RS\n",total_price);
+}
+void DISPLAY()  //STACK_IMPLEMENTATION
+{
+	struct node *top=root;
+	while(top->rptr!=NULL)
+	{
+
+		top = top->rptr;
+	}
+	printf("\tID\t   NAME\t\t   POST\t\t   SALARY\n");
+	while(top!=NULL)
+	{
+	      printf("º  ");	printf("%ld\t",top->id);printf("º  ");
+		printf("%s\t",top->name);printf("º  ");
+		printf("%s\t",top->designation);printf("º  ");
+		printf("%ld\t",top->salary);printf("º\n");
+
+		top = top->lptr;
+	}
+    printf("\n\n");
+
+
+}
+void DISPLAY1()  //STACK_IMPLEMENTATION
+{
+
+		front=root;
+		front=front->rptr;
+		root=front;
+		top =root;
+	printf("\tID\t   NAME\t\t   POST\t\t   SALARY\n");
+	while(top!=NULL)
+	{
+	      printf("º  ");	printf("%ld\t",top->id);printf("º  ");
+		printf("%s\t",top->name);printf("º  ");
+		printf("%s\t",top->designation);printf("º  ");
+		printf("%ld\t",top->salary);printf("º\n");
+
+		top = top->rptr;
+	}
+    printf("\n\n");
+
+
+}
+
+void ORDER_EMP_TOP_TO_BOTTOM()  //STACK_IMPLEMENTATION
+{
+	struct node *top=root;
+	while(top->rptr!=NULL)
+	{
+
+		top = top->rptr;
+	}
+	printf("\tID\t   NAME\t\t   POST\t\t   SALARY\tPERFORMANCE\n");
+	while(top!=NULL)
+	{
+	      printf("º  ");	printf("%ld\t",top->id);printf("º  ");
+		printf("%s\t",top->name);printf("º  ");
+		printf("%s\t",top->designation);printf("º  ");
+		printf("%ld\t",top->salary);printf("º  ");
+		printf("%ld\t",top->performance);printf("º\n");
+		top = top->lptr;
+	}
+    printf("\n\n");
+
+
+}
+void SUSTAIN_LEAST_PERF_EMP()     //QUEUES_IMPLEMENTATION
+{
+	struct node *front=root;
+	char yes_no[5];  //CHARACTER_ARRAY_IMPLEMENTATION
+	printf("ENTER 'YES' OR 'NO' \n");
+	scanf("%s",yes_no);
+	if(strcmpi("YES",yes_no)==0)
+	{
+		DISPLAY();
+	}
+	else if(strcmpi("NO",yes_no)==0)
+	{
+
+		DISPLAY1();
+	}
+	else
+	{
+		printf("INVALID !\n");
+	}
+}
+void SALARY_INCREMENT_BASED_ON_PERF()
+{
+      struct node *ptr=root;
+
+      while(ptr!=NULL)
+      {
+	if(ptr->performance > 7.5)
+	{
+	   ptr->salary = ptr->salary + 10000;
+	}
+	ptr=ptr->rptr;
+      }
+      ORDER_EMP_TOP_TO_BOTTOM();
+
+
+}
+
+
+int main()
+{
+
+	 char code[10];
+	 int x;
+	 x:
+	 clrscr();
+	textcolor(11);   gotoxy(18,1);	cprintf("ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»\n");
+ textcolor(11);   gotoxy(18,2);	cprintf("º   ENTER THE COMPANY's CONFIDENTIAL SECURITY CODE. º\n");
+ textcolor(11);     gotoxy(18,3);  cprintf("ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼\n");
+   gotoxy(40,4);	scanf("%s",code);
+	clrscr();
+
+if(strcmpi("*****",code)==0)
+{
+	textcolor(11);   gotoxy(45,9);	cprintf("ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»\n");
+   gotoxy(45,10);	printf("º");gotoxy(52,10);textcolor(4);cprintf("W E L C O M E");printf("     º\n");		    //    
+   gotoxy(45,11);    printf("º");	   gotoxy(55,11); printf("\t     	     º\n");
+   gotoxy(45,12);   printf("º");gotoxy(48,11);textcolor(2); cprintf("       TO THE"); gotoxy(55,12);	printf("\      	     º	\n") ;				//                  º=186
+   gotoxy(45,13);  printf("º");gotoxy(52,7);textcolor(5+128);cprintf("INDIA's NO:1 !");
+   gotoxy(45,14);  printf("º");gotoxy(48,13);textcolor(9);	cprintf("     IT HUB OF "); gotoxy(-1,14); printf("       º\n") ;
+   gotoxy(45,15);  printf("º");	  gotoxy(55,15);   printf("\t             º\n") ;
+   gotoxy(45,16);  printf("º");gotoxy(48,14);textcolor(14+128);	cprintf("   A-3 HP PVT LTD! ");  gotoxy(55,16);      printf("\t      	     º\n");
+textcolor(11);     gotoxy(45,17);  cprintf("ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼") ; gotoxy(70,14);printf("º\n");
+
+
+	while(1)
+	{
+		int choice;
+		printf("EMPLOYEE DETAILS :- \n\n 1.ADD EMPLOYEE DETAILS.\n 2.REMOVE EMPLOYEE DETAILS.\n 3.TOTAL EMPLOYEES.\n 4.SEARCH EMPLOYEE DETAIL.\n 5.DISPLAY EMPLOYEE DETAILS.\n 6.PERFORMANCE BASED ANALYSIS OF EMPLOYEES.\n 7.DISPLAY LOW EMPLOYEE PERFORMANCE WRTO GIVEN.\n 8.DISPLAY HIGH EMPLOYEE PERFORMANCE WRTO GIVEN.\n 9.LEAST PERFORMER EMPLOYEE OF THE YEAR 2020.\n 10.STAR PERFORMER EMPLOYEE OF THE YEAR 2020.\n 11.SALARY INCREMENTATION BASED ON PERFORMANCE.\n 12.COMPANY'S ANNUAL EMPLOYEE INVESTMENT.\n 13.SUSTAIN LEAST EMPLOYEE OF THE YEAR.\n 14.END SESSION. \n");
+		printf("OPTION NO:-");scanf("%d",&choice);
+		if(choice==1)
+		{
+		      ADD_EMPLOYEE();
+		}
+		else if(choice==2)
+		{
+		      REMOVE_EMPLOYEE();
+		}
+		else if(choice==3)
+		{
+		      TOTAL_EMPLOYEES();
+		}
+		else if(choice==4)
+		{
+		      SEARCH_EMPLOYEE();
+		}
+		else if(choice==5)
+		{
+		      DISPLAY();
+		}
+		else if(choice==6)
+		{
+		      ORDER_EMP_TOP_TO_BOTTOM();
+		}
+		else if(choice==7)
+		{
+		      DISP_LOW_EMP_PER_WRTO_GIVEN();
+		}
+		else if(choice==8)
+		{
+		      DISP_HIGH_EMP_PER_WRTO_GIVEN();
+		}
+		else if(choice==9)
+		{
+		      LEAST_PERFORMER();
+		}
+		else if(choice==10)
+		{
+		      TOP_PERFORMER();
+		}
+		else if(choice==11)
+		{
+		      SALARY_INCREMENT_BASED_ON_PERF();
+		}
+		else if(choice==12)
+		{
+		      TOTAL_EMP_SALARY_PER_ANNUM();
+		}
+		else if(choice==13)
+		{
+		      SUSTAIN_LEAST_PERF_EMP();
+		}
+		else if(choice==14)
+		{
+			clrscr();
+				textcolor(11+128);   gotoxy(18,11);	cprintf("ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»\n");
+ textcolor(11+128);   gotoxy(18,12);	cprintf("º           THANK - YOU VISIT AGAIN....!         º\n");
+ textcolor(11+128);     gotoxy(18,13);  cprintf("ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼\n");
+
+			exit(1);
+		}
+
+	}
+}
+else
+{
+	printf("PASSWORD DIDN'T MATCHED PLZ TRY AGAIN...\n");
+    goto x;
+}
+       getch();
+       return 0;
+}
